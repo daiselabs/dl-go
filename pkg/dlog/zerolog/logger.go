@@ -108,48 +108,50 @@ func (lp *zerologLogger) PanicMsg(msg string) {
 	lp.zl.Panic().Msg(msg)
 }
 
-func (lp *zerologLogger) logEvent(e *zerolog.Event, props []log.Prop) {
+func (lp *zerologLogger) logEvent(e *zerolog.Event, props []log.Prop) *zerolog.Event {
 	if len(props) == 0 {
-		return
+		return e
 	}
 
 	zle := &zlEvent{e: e}
 	for _, p := range props {
 		p(zle)
 	}
+
+	return e
 }
 
 func (lp *zerologLogger) Debug(msg string, props ...log.Prop) {
 	if !lp.shouldLog(log.DebugLevel) {
 		return
 	}
-	lp.logEvent(lp.zl.Debug(), props)
+	lp.logEvent(lp.zl.Debug(), props).Msg(msg)
 }
 
 func (lp *zerologLogger) Info(msg string, props ...log.Prop) {
 	if !lp.shouldLog(log.InfoLevel) {
 		return
 	}
-	lp.logEvent(lp.zl.Info(), props)
+	lp.logEvent(lp.zl.Info(), props).Msg(msg)
 }
 
 func (lp *zerologLogger) Warn(msg string, props ...log.Prop) {
 	if !lp.shouldLog(log.WarnLevel) {
 		return
 	}
-	lp.logEvent(lp.zl.Warn(), props)
+	lp.logEvent(lp.zl.Warn(), props).Msg(msg)
 }
 
 func (lp *zerologLogger) Error(msg string, props ...log.Prop) {
 	if !lp.shouldLog(log.ErrorLevel) {
 		return
 	}
-	lp.logEvent(lp.zl.Error(), props)
+	lp.logEvent(lp.zl.Error(), props).Msg(msg)
 }
 
 func (lp *zerologLogger) Panic(msg string, props ...log.Prop) {
 	if !lp.shouldLog(log.PanicLevel) {
 		return
 	}
-	lp.logEvent(lp.zl.Panic(), props)
+	lp.logEvent(lp.zl.Panic(), props).Msg(msg)
 }
